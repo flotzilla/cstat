@@ -1,6 +1,7 @@
 # CStat
-=====
 Трекер статистики COVID-19 по Украине по данным МОЗ на NodeMCU и microPython
+
+![cover_image](https://user-images.githubusercontent.com/3332506/77623848-88677a00-6f49-11ea-9d0b-65767c19d6d7.jpg)
 
 ## Requirements
 * NodeMCU or esp8266 or esp32
@@ -19,6 +20,14 @@
 * update password for webrepl access in `webrepl_cfg.py`
 * driver for SSD1306 OLED was found [here](https://github.com/micropython/micropython/blob/master/drivers/display/ssd1306.py). If you want to use latest version, please, update local ssd1306.py file
 * upload all files with `http://micropython.org/webrepl/` or console utils, like `ampy --port /dev/ttyUSB0 put <filename>`
+
+# Display stats
+* first line - date of last update from ministry of health
+* second line 
+    * A - active cases total
+    * R - recovered total
+    * D - deaths - total deaths
+* third line - addition for each column by last day 
 
 # About
 Statistics will update once in a hour from this url `https://cdn.pravda.com/cdn/covid-19/ukraine.json`, provided by ukrainian news site [Украинская правда](pravda.com.ua)
