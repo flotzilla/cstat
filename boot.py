@@ -9,5 +9,5 @@ import cstat
 webrepl.start()
 gc.collect()
 
-cstat.init()
-cstat.start()
+c = cstat.CStat()
+c.start()
