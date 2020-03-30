@@ -1,7 +1,7 @@
 # CStat
 Трекер статистики COVID-19 по Украине по данным МОЗ на NodeMCU и microPython.
 
-NodeMCU COVID-19 tracker, written in python (microPython), according to data, provided by ministry of health of Ukraine
+NodeMCU COVID-19 tracker, written in python (microPython). Data came from rapidapi.com (required auth)
  
 ![cover_image](https://user-images.githubusercontent.com/3332506/77623848-88677a00-6f49-11ea-9d0b-65767c19d6d7.jpg)
 
@@ -17,8 +17,10 @@ NodeMCU COVID-19 tracker, written in python (microPython), according to data, pr
 ## Install
 * update esp bootloader to microPython, you can get it from [here](http://micropython.org/download#esp8266). For esp32 see different bootloader image.
 * upload .bin file with esptool
+`esptool.py --chip esp8266 --port /dev/ttyUSB0 --baud 460800 erase_flash`
 `esptool.py --chip esp8266 --port /dev/ttyUSB0 --baud 460800 write_flash --flash_size=detect -fm dio 0 esp8266-20191220-v1.12.bin`
-* update `ssid` and `password` to your network settings
+* update `ssid` and `password` in `cstat.py` to your network settings
+* Obtain api key from [rapidapi.com](https://rapidapi.com/KishCom/api/covid-19-coronavirus-statistics) and update `x_rapidapi_key` in `cstat.py`
 * update password for webrepl access in `webrepl_cfg.py`
 * driver for SSD1306 OLED was found [here](https://github.com/micropython/micropython/blob/master/drivers/display/ssd1306.py). If you want to use latest version, please, update local ssd1306.py file
 * upload all files with `http://micropython.org/webrepl/` or console utils, like `ampy --port /dev/ttyUSB0 put <filename>`
@@ -28,10 +30,10 @@ NodeMCU COVID-19 tracker, written in python (microPython), according to data, pr
 * second line 
     * A - active cases total
     * R - recovered total
-    * D - deaths - total deaths
-* third line - addition for each column by last day 
+    * D - deaths - total deaths 
 
 # About
-Statistics will update once in a hour from this url `https://cdn.pravda.com/cdn/covid-19/ukraine.json`, provided by ukrainian news site [Украинская правда](pravda.com.ua)
+Statistics will update once in a hour from this url `https://covid-19-coronavirus-statistics.p.rapidapi.com/v1/stats?country=Ukraine`
+You can modify to your country stats, just change country value in URL
 
-Also, you can modify to some different data source. Don't forget to update `parse_data` function afterwards.
+More info about api [here](https://rapidapi.com/KishCom/api/covid-19-coronavirus-statistics) 
