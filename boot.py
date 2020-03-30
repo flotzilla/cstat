@@ -7,7 +7,13 @@ import gc
 import webrepl
 import cstat
 webrepl.start()
+gc.enable()
 gc.collect()
 
-c = cstat.CStat()
-c.start()
+try:
+    c = cstat.CStat()
+except Exception as e:
+    print('Sorry, an error occurred during initialization')
+    print(e)
+else:
+    c.start()
