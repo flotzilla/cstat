@@ -2,18 +2,19 @@ from machine import I2C, Pin, Timer
 import ssd1306
 import network
 import urequests
+import gc
 
 
 class CStat:
     def __init__(self):
-        self.url = 'https://cdn.pravda.com/cdn/covid-19/ukraine.json'
-        self.ssid = ''
-        self.password = ''
+        self.url = 'https://covid-19-coronavirus-statistics.p.rapidapi.com/v1/stats?country=Ukraine'
+        self.x_rapidapi_key = ''  # modify this line
+        self.ssid = ''  # modify this line
+        self.password = ''  # modify this line
 
-        self.confirmed = self.confirmed_by_last_day = 0
-        self.recovered = self.recovered_by_last_day = 0
-        self.deaths = self.deaths_by_last_day = 0
-
+        self.confirmed = 0
+        self.recovered = 0
+        self.deaths = 0
         self.updated = ''
 
         self.display = self.tim = None
@@ -21,6 +22,7 @@ class CStat:
         i2c = I2C(-1, Pin(5), Pin(4))
         self.display = ssd1306.SSD1306_I2C(128, 32, i2c)
         self.display.fill(0)
+        self.display.text('Connecting...', 1, 1, 1)
         self.display.show()
 
         self.tim = Timer(-1)
@@ -36,42 +38,45 @@ class CStat:
                 pass
         print('network config:', wlan.ifconfig())
 
-    def parse_data(self, json):
-        self.confirmed = json['confirmed'][-1]
-        self.confirmed_by_last_day = json['confirmed'][-1] - json['confirmed'][-2]
+    def parse_country_data(self, json):
+        self.confirmed = json['data']['covid19Stats'][0]['confirmed']
+        self.recovered = json['data']['covid19Stats'][0]['recovered']
+        self.deaths = json['data']['covid19Stats'][0]['deaths']
+        self.updated = json['data']['covid19Stats'][0]['lastUpdate']
 
-        self.recovered = json['recovered'][-1]
-        self.recovered_by_last_day = json['recovered'][-1] - json['recovered'][-2]
+    def grab_api_data(self):
+        headers = {
+            'content-type': 'application/json',
+            'x-rapidapi-host': 'covid-19-coronavirus-statistics.p.rapidapi.com',
+            'x-rapidapi-key': self.x_rapidapi_key
+        }
+        resp = urequests.get(self.url, headers=headers)
 
-        self.deaths = json['deaths'][-1]
-        self.deaths_by_last_day = json['deaths'][-1] - json['deaths'][-2]
-
-        self.updated = json['display_updated']
-
-    def get_data(self):
-        resp = urequests.get(self.url)
         if resp.status_code is 200:
-            self.parse_data(resp.json())
+            self.parse_country_data(resp.json())
+        else:
+            print('Sorry, cannot connect')
+            print(resp.status_code)
+            print(resp.text)
 
     def display_results(self):
         self.display.fill(0)
         self.display.text(self.updated, 1, 1, 1)
 
         self.display.text('A' + str(self.confirmed), 1, 10, 1)
-        self.display.text('+' + str(self.confirmed_by_last_day), 1, 20, 1)
-
         self.display.text('R' + str(self.recovered), 50, 10, 1)
-        self.display.text('+' + str(self.recovered_by_last_day), 50, 20, 1)
-
         self.display.text('D' + str(self.deaths), 90, 10, 1)
-        self.display.text('+' + str(self.deaths_by_last_day), 90, 20, 1)
 
         self.display.show()
 
     def grab_data(self):
-        self.get_data()
-        self.display_results()
-        print('update function called')
+        try:
+            print('update function called')
+            self.grab_api_data()
+            self.display_results()
+            gc.collect()
+        except Exception as e:
+            print(e)
 
     def start(self):
         self.grab_data()
