@@ -3,7 +3,7 @@
 
 NodeMCU COVID-19 tracker, written in python (microPython). Data came from rapidapi.com (required auth)
  
-![cover_image](https://user-images.githubusercontent.com/3332506/77623848-88677a00-6f49-11ea-9d0b-65767c19d6d7.jpg)
+![photo_2020-03-30_22-23-34](https://user-images.githubusercontent.com/3332506/77953041-4d60a000-72d5-11ea-94ad-0fafef8a7a6e.jpg)
 
 ## Requirements
 * NodeMCU or esp8266 or esp32
