@@ -1,5 +1,5 @@
 # CStat
-Трекер статистики COVID-19 по Украине по данным МОЗ на NodeMCU и microPython.
+COVID-19 statistics tracker project using NodeMCU and microPython
 
 NodeMCU COVID-19 tracker, written in python (microPython). Data came from rapidapi.com (required auth)
  
